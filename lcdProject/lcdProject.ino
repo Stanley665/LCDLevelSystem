@@ -4,9 +4,19 @@
 // with the arduino pin number it is connected to
 
 const int rs = 7, en = 8, d4 = 9, d5 = 10, d6 = 11, d7 = 12;
-const int del = 100;
-int count = 0;
+const double del = 1000/120;
+const double maxV = 1;
+double pos = 0;
 int mode = 0;
+double h = 4;
+
+const int SW_pin = 2;
+const int X_pin = A0;
+const int Y_pin = A1;
+
+
+
+
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 byte myLevels[8][8];
 
@@ -37,20 +47,34 @@ void setup() {
   // for(int i = 0; i < 16; i++){
   //   writeLevel(i, i);
   // }
+
+
+  pinMode(SW_pin, INPUT);
+  digitalWrite(SW_pin, HIGH);
+  Serial.begin(9600);
 }
 
 void loop() {
   if(mode==0){
     for(int i = 0; i < 16; i++){
-      writeLevel(func(i+count), i);
+      writeLevel(func1(i+pos), i);
+    }
+    pos+=(maxV/512)*(analogRead(Y_pin)-513);
+    if(h>8&&h>0&&abs(512-X_pin)>256){
+      h+=1000/del;
+      Serial.println("aaa");
     }
   }
-  count++;
+  
   delay(del);
 }
 
-double func(double x){
-  return 8*sin(x)+8;
+double func0(double x){
+  return h*cos(x)+8;
+}
+
+double func1(double x){
+  return 0.01*x*x;
 }
 
 int writeLevel(int lev, int x){
