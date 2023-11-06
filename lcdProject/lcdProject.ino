@@ -74,7 +74,7 @@ double func0(double x){
 }
 
 double func1(double x){
-  return 0.01*x*x;
+  return 4*sin(x)+8;
 }
 
 int writeLevel(int lev, int x){
